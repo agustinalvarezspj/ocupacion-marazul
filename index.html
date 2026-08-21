@@ -1,0 +1,972 @@
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pickup de ocupación · Mar Azul Suites</title>
+<style>
+  :root{
+    --ink:#0B2432;
+    --ink-2:#1B3B4D;
+    --muted:#6E8794;
+    --line:#D2DEE1;
+    --line-soft:#E6EDEE;
+    --paper:#E9EFEF;
+    --surface:#FFFFFF;
+    --sea:#0E7C86;
+    --sea-deep:#0A5B63;
+    --sea-soft:#BFDFE1;
+    --sand:#E3D2AB;
+    --up:#1F7A5C;
+    --up-soft:#E2F1EA;
+    --down:#B14A33;
+    --down-soft:#F8E6E1;
+    --mono:ui-monospace,"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;
+    --sans:ui-sans-serif,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--sans);
+    font-size:14px;
+    line-height:1.45;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1240px;margin:0 auto;padding:20px 18px 64px}
+
+  /* ---------- header ---------- */
+  header.top{
+    display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;justify-content:space-between;
+    padding-bottom:14px;border-bottom:2px solid var(--ink);
+  }
+  .brand h1{
+    margin:0;font-size:19px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
+  }
+  .brand p{margin:3px 0 0;color:var(--muted);font-size:12px;letter-spacing:.04em}
+  .tools{display:flex;gap:8px;flex-wrap:wrap}
+  button{font-family:inherit;font-size:12px;cursor:pointer}
+  .btn{
+    background:var(--surface);border:1px solid var(--line);color:var(--ink-2);
+    padding:7px 12px;border-radius:2px;letter-spacing:.03em;transition:.12s;
+  }
+  .btn:hover{border-color:var(--sea);color:var(--sea-deep)}
+  .btn:focus-visible{outline:2px solid var(--sea);outline-offset:2px}
+  .btn.solid{background:var(--ink);border-color:var(--ink);color:#fff}
+  .btn.solid:hover{background:var(--sea-deep);border-color:var(--sea-deep);color:#fff}
+  .btn.danger:hover{border-color:var(--down);color:var(--down)}
+
+  /* ---------- tabs (viernes) ---------- */
+  .tabsrow{display:flex;align-items:stretch;gap:0;margin-top:16px;border-bottom:1px solid var(--line)}
+  .tabs{display:flex;gap:2px;overflow-x:auto;flex:1;scrollbar-width:thin;padding-bottom:1px}
+  .tab{
+    flex:0 0 auto;background:transparent;border:1px solid transparent;border-bottom:none;
+    padding:8px 13px 7px;border-radius:2px 2px 0 0;color:var(--muted);
+    font-family:var(--mono);font-size:12px;letter-spacing:.02em;white-space:nowrap;
+  }
+  .tab span{display:block;font-size:9px;letter-spacing:.16em;text-transform:uppercase;opacity:.75}
+  .tab:hover{color:var(--ink)}
+  .tab[aria-selected="true"]{
+    background:var(--surface);border-color:var(--line);color:var(--ink);font-weight:700;
+    box-shadow:inset 0 2px 0 var(--sea);
+  }
+  .tabadd{flex:0 0 auto;align-self:center;margin-left:10px}
+
+  /* ---------- view switch ---------- */
+  .views{display:flex;gap:20px;margin:18px 0 14px}
+  .viewbtn{
+    background:none;border:none;padding:0 0 5px;color:var(--muted);
+    font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+    border-bottom:2px solid transparent;
+  }
+  .viewbtn[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--sea)}
+
+  /* ---------- panel ---------- */
+  .panel{background:var(--surface);border:1px solid var(--line);border-radius:2px;padding:18px}
+  .panelhead{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-bottom:16px}
+  .panelhead h2{margin:0;font-size:13px;letter-spacing:.14em;text-transform:uppercase}
+  .hint{color:var(--muted);font-size:12px}
+
+  /* ---------- grupo de filas ---------- */
+  .grp{margin-bottom:22px}
+  .grp:last-child{margin-bottom:0}
+  .grplabel{
+    display:flex;align-items:center;gap:10px;margin:0 0 8px;
+    font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--sea-deep);
+  }
+  .grplabel::after{content:"";flex:1;height:1px;background:var(--line-soft)}
+
+  .row{
+    display:grid;grid-template-columns:172px 78px 62px 1fr;gap:12px;align-items:center;
+    padding:5px 0;border-bottom:1px solid var(--line-soft);
+  }
+  .row:last-child{border-bottom:none}
+  .rlabel{font-family:var(--mono);font-size:12.5px;display:flex;align-items:center;gap:7px}
+  .pill{
+    font-family:var(--sans);font-size:8.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+    padding:2px 5px;border-radius:2px;background:var(--sand);color:#5C4A21;
+  }
+  .pill.nav{background:#D9E7DC;color:#2C5138}
+  .pill.ny{background:#DDE3F0;color:#33406B}
+  input[type=number]{
+    width:100%;font-family:var(--mono);font-size:14px;text-align:right;color:var(--ink);
+    padding:6px 8px;border:1px solid var(--line);border-radius:2px;background:#FCFDFD;
+  }
+  input[type=number]:focus{outline:none;border-color:var(--sea);background:#fff;box-shadow:0 0 0 3px rgba(14,124,134,.12)}
+  input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+  input[type=number]{-moz-appearance:textfield}
+  .delta{font-family:var(--mono);font-size:12px;text-align:right;color:var(--muted)}
+  .delta.up{color:var(--up);font-weight:700}
+  .delta.down{color:var(--down);font-weight:700}
+
+  /* ---------- barra firma: nivel + pickup ---------- */
+  .bar{position:relative;height:16px;background:#F1F5F5;border:1px solid var(--line-soft);border-radius:1px;overflow:hidden}
+  .bar .base{position:absolute;left:0;top:0;bottom:0;background:var(--sea-soft)}
+  .bar .gain{position:absolute;top:0;bottom:0;background:var(--sea)}
+  .bar .loss{position:absolute;top:0;bottom:0;background:var(--down-soft);border-right:2px solid var(--down)}
+  .bar .refmark{position:absolute;top:-2px;bottom:-2px;width:2px;background:var(--ink);opacity:.55}
+  .bar .cap{position:absolute;top:0;bottom:0;width:1px;background:var(--sea-deep)}
+  .barnote{font-family:var(--mono);font-size:10.5px;color:var(--muted);margin-top:2px}
+
+  /* ---------- tabla evolución ---------- */
+  .scroller{overflow-x:auto;border:1px solid var(--line);border-radius:2px}
+  table{border-collapse:separate;border-spacing:0;font-family:var(--mono);font-size:12px;width:100%}
+  th,td{padding:6px 9px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--line-soft)}
+  thead th{
+    background:var(--ink);color:#fff;font-weight:600;font-size:10px;letter-spacing:.08em;
+    position:sticky;top:0;z-index:3;
+  }
+  thead th small{display:block;font-size:8.5px;opacity:.65;letter-spacing:.14em}
+  th.rowhead,td.rowhead{
+    text-align:left;position:sticky;left:0;background:var(--surface);z-index:2;
+    border-right:1px solid var(--line);min-width:158px;
+  }
+  thead th.rowhead{background:var(--ink);z-index:4}
+  tr.grouprow td{
+    background:#F4F8F8;color:var(--sea-deep);font-family:var(--sans);font-size:9.5px;
+    font-weight:700;letter-spacing:.16em;text-transform:uppercase;text-align:left;
+  }
+  tr.grouprow td.rowhead{background:#F4F8F8}
+  td .v{font-weight:600}
+  td .d{display:block;font-size:9.5px;color:var(--muted)}
+  td .d.up{color:var(--up)}
+  td .d.down{color:var(--down)}
+  td.ref{background:#FAF7F0;color:var(--ink-2);border-left:1px solid var(--sand)}
+  thead th.ref{background:var(--ink-2)}
+
+  /* ---------- curva ---------- */
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+  .chip{
+    background:var(--surface);border:1px solid var(--line);color:var(--muted);
+    padding:4px 9px;border-radius:2px;font-family:var(--mono);font-size:11px;
+  }
+  .chip[aria-pressed="true"]{border-color:var(--sea);color:#fff;background:var(--sea)}
+  .chartbox{width:100%;overflow:hidden}
+  svg{display:block;width:100%;height:auto}
+  .legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:10px;font-size:11px;color:var(--muted);font-family:var(--mono)}
+  .legend i{display:inline-block;width:16px;height:0;border-top-width:2px;border-top-style:solid;vertical-align:middle;margin-right:5px}
+
+  .empty{text-align:center;padding:52px 16px;color:var(--muted)}
+  .empty strong{display:block;color:var(--ink);font-size:15px;margin-bottom:6px;letter-spacing:.02em}
+  .toast{
+    position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(14px);
+    background:var(--ink);color:#fff;padding:9px 16px;border-radius:2px;font-size:12px;
+    font-family:var(--mono);opacity:0;pointer-events:none;transition:.2s;z-index:60;
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  .gate{position:fixed;inset:0;background:var(--paper);display:flex;align-items:center;justify-content:center;padding:20px;z-index:100}
+  .gatebox{background:var(--surface);border:1px solid var(--line);border-radius:2px;max-width:350px;width:100%;padding:26px}
+  .gatebox h1{margin:0;font-size:15px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
+  .gatebox .sub{margin:4px 0 20px;color:var(--muted);font-size:12px}
+  .gatebox label{display:block;font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:12px 0 4px}
+  .gatebox input{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:2px;font-family:var(--mono);font-size:14px;background:#FCFDFD}
+  .gatebox input:focus{outline:none;border-color:var(--sea);box-shadow:0 0 0 3px rgba(14,124,134,.12)}
+  .gatebox .go{width:100%;margin-top:18px;padding:10px;font-size:12px;letter-spacing:.08em}
+  .gateerr{margin-top:12px;font-size:12px;color:var(--down);min-height:16px}
+  .gatenote{margin-top:16px;padding-top:14px;border-top:1px solid var(--line-soft);font-size:11.5px;color:var(--muted);line-height:1.5}
+  .userrow{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--line-soft);font-family:var(--mono);font-size:13px}
+  .userrow span{flex:1}
+  .userrow .me{font-family:var(--sans);font-size:9px;letter-spacing:.1em;text-transform:uppercase;background:var(--sea-soft);color:var(--sea-deep);padding:2px 6px;border-radius:2px}
+  .savedot{font-family:var(--mono);font-size:11px;color:var(--muted)}
+  .modalbg{position:fixed;inset:0;background:rgba(11,36,50,.45);display:none;align-items:center;justify-content:center;z-index:70;padding:18px}
+  .modalbg.show{display:flex}
+  .modal{background:#fff;border-radius:3px;padding:20px;max-width:360px;width:100%}
+  .modal h3{margin:0 0 6px;font-size:13px;letter-spacing:.12em;text-transform:uppercase}
+  .modal p{margin:0 0 14px;color:var(--muted);font-size:12.5px}
+  .modal input[type=date]{width:100%;padding:8px;border:1px solid var(--line);border-radius:2px;font-family:var(--mono);font-size:13px}
+  .modal .acts{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
+  label.chk{display:flex;gap:7px;align-items:center;margin-top:12px;font-size:12.5px;color:var(--ink-2)}
+
+  @media (max-width:720px){
+    .row{grid-template-columns:1fr 74px 56px;gap:8px}
+    .row .barwrap{grid-column:1/-1;margin-top:2px}
+    .brand h1{font-size:16px}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="gate" id="gate">
+  <div class="gatebox">
+    <h1 id="gTitle">Pickup de ocupación</h1>
+    <p class="sub" id="gSub">Mar Azul Suites</p>
+    <div id="gForm">
+      <label for="gUser">Usuario</label>
+      <input id="gUser" autocomplete="username" spellcheck="false">
+      <label for="gPass">Contraseña</label>
+      <input id="gPass" type="password" autocomplete="current-password">
+      <div id="gPass2wrap" style="display:none">
+        <label for="gPass2">Repetir contraseña</label>
+        <input id="gPass2" type="password" autocomplete="new-password">
+      </div>
+      <button class="btn solid go" id="gGo">Entrar</button>
+      <div class="gateerr" id="gErr"></div>
+    </div>
+    <div class="gatenote" id="gNote"></div>
+  </div>
+</div>
+
+<div class="wrap" id="app" style="display:none">
+  <header class="top">
+    <div class="brand">
+      <h1>Pickup de ocupación</h1>
+      <p>Mar Azul Suites · relevamiento semanal 2026 – marzo 2027</p>
+    </div>
+    <div class="tools">
+      <span class="savedot" id="savedot"></span>
+      <span class="savedot" style="border-left:1px solid var(--line);padding-left:10px">usuario: <b id="whoami"></b></span>
+      <button class="btn" id="btnTeam">Equipo</button>
+      <button class="btn" id="btnDrop" style="display:none">Descartar borrador</button>
+      <button class="btn solid" id="btnPub" style="display:none">Publicar cambios</button>
+      <button class="btn" id="btnCsv">Exportar CSV</button>
+    </div>
+  </header>
+
+  <div class="tabsrow">
+    <div class="tabs" id="tabs" role="tablist"></div>
+    <button class="btn solid tabadd" id="btnNew">+ Nuevo viernes</button>
+  </div>
+
+  <nav class="views" role="tablist">
+    <button class="viewbtn" data-view="carga" role="tab" aria-selected="true">Carga</button>
+    <button class="viewbtn" data-view="evol" role="tab" aria-selected="false">Evolución</button>
+    <button class="viewbtn" data-view="curva" role="tab" aria-selected="false">Curva</button>
+    <button class="viewbtn" data-view="hist" role="tab" aria-selected="false">Histórico</button>
+  </nav>
+
+  <section class="panel" id="panel"></section>
+</div>
+
+<div class="modalbg" id="modal">
+  <div class="modal">
+    <h3>Nuevo relevamiento</h3>
+    <p>Fecha del corte. Por defecto propone el viernes que corresponde.</p>
+    <input type="date" id="newDate">
+    <label class="chk"><input type="checkbox" id="carry" checked> Arrancar con los valores del corte anterior</label>
+    <div class="acts">
+      <button class="btn" id="mCancel">Cancelar</button>
+      <button class="btn solid" id="mOk">Crear</button>
+    </div>
+  </div>
+</div>
+
+<div class="modalbg" id="teamModal">
+  <div class="modal">
+    <h3>Equipo</h3>
+    <p>Cada persona entra con su usuario y su propia contraseña. Los cambios recién valen después de publicar.</p>
+    <div id="teamList"></div>
+    <label class="chk" style="display:block;margin-top:18px">Agregar persona</label>
+    <input id="tUser" placeholder="usuario" spellcheck="false" style="width:100%;padding:8px;border:1px solid var(--line);border-radius:2px;font-family:var(--mono);margin-top:6px">
+    <input id="tPass" type="password" placeholder="contraseña inicial (12+)" style="width:100%;padding:8px;border:1px solid var(--line);border-radius:2px;font-family:var(--mono);margin-top:6px">
+    <button class="btn" id="tAdd" style="margin-top:8px">Agregar</button>
+    <label class="chk" style="display:block;margin-top:18px">Cambiar mi contraseña</label>
+    <input id="tNewPass" type="password" placeholder="nueva contraseña (12+)" style="width:100%;padding:8px;border:1px solid var(--line);border-radius:2px;font-family:var(--mono);margin-top:6px">
+    <button class="btn" id="tChange" style="margin-top:8px">Cambiar</button>
+    <div class="acts"><button class="btn solid" id="tClose">Cerrar</button></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+"use strict";
+
+/* ============ estructura de filas ============ */
+const GROUPS = [
+  { g:"2026 · mes a mes", items:[
+    {k:"m01",l:"Enero 2026"},{k:"m02",l:"Febrero 2026"},{k:"m03",l:"Marzo 2026"},
+    {k:"m04",l:"Abril 2026"},{k:"m05",l:"Mayo 2026"},{k:"m06",l:"Junio 2026"},
+    {k:"m07",l:"Julio 2026"},{k:"m08",l:"Agosto 2026"},{k:"m09",l:"Septiembre 2026"},
+    {k:"m10",l:"Octubre 2026"},{k:"m11",l:"Noviembre 2026"}
+  ]},
+  { g:"Temporada 26/27 · por período", items:[
+    {k:"s1",l:"01/12 al 23/12",tag:"media"},
+    {k:"s2",l:"23/12 al 25/12",tag:"navidad",cls:"nav"},
+    {k:"s3",l:"26/12 al 01/01",tag:"año nuevo",cls:"ny"},
+    {k:"s4",l:"01/01 al 15/01"},
+    {k:"s5",l:"15/01 al 31/01"},
+    {k:"s6",l:"01/02 al 14/02"},
+    {k:"s7",l:"15/02 al 28/02"},
+    {k:"s8",l:"01/03 al 15/03"},
+    {k:"s9",l:"15/03 al 31/03"}
+  ]},
+  { g:"Temporada 26/27 · por mes", items:[
+    {k:"t1",l:"12/2026 mes completo"},
+    {k:"t1b",l:"23/12 al 31/12",tag:"alta"},
+    {k:"t2",l:"01/2027"},{k:"t3",l:"02/2027"},{k:"t4",l:"03/2027"}
+  ]}
+];
+const ALL = GROUPS.flatMap(g=>g.items);
+const KEYOF = {}; ALL.forEach(r=>KEYOF[r.k]=r);
+
+/* ============ referencia temporada 25/26 (transcripta de la planilla) ============ */
+const REF_ANCHOR = "2025-12-23";
+const REF = [
+  {d:"2025-11-20", v:{s2:13,s3:58,s4:64,s5:56,s6:14,s7:7,  t1:43,t2:60,t3:10}},
+  {d:"2025-11-27", v:{s2:28,s3:68,s4:64,s5:56,s6:14,s7:10, t1:55,t2:60,t3:12}},
+  {d:"2025-12-06", v:{s2:44,s3:76,s4:64,s5:57,s6:15,s7:10, t1:68,t2:60,t3:12}},
+  {d:"2025-12-15", v:{s2:54,s3:81,s4:69,s5:55,s6:20,s7:11, t1:72,t2:62,t3:15}},
+  {d:"2025-12-22", v:{s2:62,s3:94,s4:75,s5:55,s6:30,s7:11, t1:83,t2:65,t3:21}},
+  {d:"2025-12-27", v:{s2:67,s3:95,s4:78,s5:61,s6:43,s7:12, t1:85,t2:69,t3:28}},
+  {d:"2026-01-05", v:{s2:67,s3:95,s4:80,s5:69,s6:50,s7:20, t1:85,t2:74,t3:35}},
+  {d:"2026-01-12", v:{s2:67,s3:95,s4:81,s5:81,s6:62,s7:26, t1:85,t2:81,t3:44}},
+  {d:"2026-01-16", v:{s2:67,s3:95,s4:81,s5:90,s6:67,s7:31, t1:85,t2:86,t3:49}},
+  {d:"2026-01-20", v:{s2:67,s3:95,s4:81,s5:90,s6:67,s7:32, t1:85,t2:86,t3:50}},
+  {d:"2026-01-28", v:{s2:67,s3:95,s4:81,s5:93,s6:70,s7:36, t1:85,t2:87,t3:53}},
+  {d:"2026-02-05", v:{s2:67,s3:95,s4:81,s5:93,s6:80,s7:54, t1:85,t2:88,t3:67}}
+];
+const REF_FINAL = REF[REF.length-1].v;
+const CUR_ANCHOR = "2026-12-23";
+
+/* ============ ocupación mensual histórica (mes completo) ============ */
+const MES=["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"];
+const HIST={
+  2023:[85,63,41,34,18,25,37,12,18,30,21,41],
+  2024:[69,41,21, 8, 0, 6, 5, 6,16,27,43,46],
+  2025:[81,39,50,15,17,16,39,19,22,25,39,45],
+  2026:[88,75,24,13, 6, 7,32,20, 2, 4, 8,null]
+};
+/* tres referencias por fila: los mismos meses de años anteriores */
+function refs(k){
+  if(k==="t1b") return [{y:"",v:null},{y:"",v:null},{y:"25/26",v:REF_FINAL.t1}];
+  if(k[0]==="m"){ const m=+k.slice(1)-1; return [2023,2024,2025].map(y=>({y:String(y),v:HIST[y][m]})); }
+  if(k[0]==="t"){
+    const map={t1:{m:11,ys:[2023,2024,2025]},t2:{m:0,ys:[2024,2025,2026]},
+               t3:{m:1,ys:[2024,2025,2026]},t4:{m:2,ys:[2024,2025,2026]}};
+    const c=map[k]; return c.ys.map(y=>({y:String(y),v:HIST[y][c.m]}));
+  }
+  const rf=REF_FINAL[k];
+  return [{y:"",v:null},{y:"",v:null},{y:"25/26",v:rf==null?null:rf}];
+}
+const refLast=k=>refs(k)[2].v;
+/* qué fila del seguimiento 25/26 le corresponde a cada fila actual */
+function refSeriesKey(k){
+  if(k==="t1b") return "t1";        // el 85% de dic 25 es solo la parte alta
+  if(k==="t1"||k==="t4"||k[0]==="m") return null;
+  return k;
+}
+
+/* ============ semilla: primer corte VIE 21/08/2026 ============ */
+const SEED=[{ id:"seed21ago", date:"2026-08-21", values:{
+  m01:88,m02:75,m03:24,m04:13,m05:6,m06:7,m07:32,m08:20,m09:2,m10:4,m11:8,
+  s1:0,s2:0,s3:9,s4:8,s5:4,s6:0,s7:0,
+  t1:2,t2:6,t3:0
+}}];
+
+/* ============ estado ============ */
+const KEY="ocupacion_marazul_v2";
+let state = { snapshots:[], sel:null, view:"carga", chartRows:["s2","s3","s4","s5"] };
+let saveTimer=null;
+
+const $=s=>document.querySelector(s);
+const el=(t,c,x)=>{const n=document.createElement(t); if(c)n.className=c; if(x!=null)n.textContent=x; return n;};
+const dnum=s=>new Date(s+"T00:00:00");
+const fmtShort=s=>{const d=dnum(s);return String(d.getDate()).padStart(2,"0")+"/"+String(d.getMonth()+1).padStart(2,"0");};
+const DOW=["DOM","LUN","MAR","MIE","JUE","VIE","SAB"];
+const dow=s=>DOW[dnum(s).getDay()];
+const lead=(s,anchor)=>Math.round((dnum(anchor)-dnum(s))/86400000);
+
+function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),1900);}
+
+/* ===================== CIFRADO =====================
+   datos.json publicado = sobre cifrado. Adentro, una clave maestra
+   aleatoria cifra los datos; esa clave va guardada una vez por usuario,
+   envuelta con su propia contraseña. Nadie ve la contraseña del otro
+   y el archivo suelto no sirve para nada.                            */
+const ITERS=600000;
+const TE=new TextEncoder(), TD=new TextDecoder();
+const b64=b=>btoa(String.fromCharCode.apply(null,new Uint8Array(b)));
+const ub64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
+const rand=n=>crypto.getRandomValues(new Uint8Array(n));
+
+async function kdf(pass,salt){
+  const km=await crypto.subtle.importKey("raw",TE.encode(pass),"PBKDF2",false,["deriveKey"]);
+  return crypto.subtle.deriveKey({name:"PBKDF2",salt,iterations:ITERS,hash:"SHA-256"},
+    km,{name:"AES-GCM",length:256},false,["encrypt","decrypt"]);
+}
+const rawKey=raw=>crypto.subtle.importKey("raw",raw,{name:"AES-GCM"},false,["encrypt","decrypt"]);
+async function seal(key,bytes){ const iv=rand(12);
+  return {iv:b64(iv),ct:b64(await crypto.subtle.encrypt({name:"AES-GCM",iv},key,bytes))}; }
+async function open_(key,iv,ct){
+  return new Uint8Array(await crypto.subtle.decrypt({name:"AES-GCM",iv:ub64(iv)},key,ub64(ct))); }
+async function wrapFor(user,pass,master){
+  const salt=rand(16); const k=await kdf(pass,salt); const s=await seal(k,master);
+  return {u:user,salt:b64(salt),iv:s.iv,wk:s.ct};
+}
+
+let envelope=null, plainSeed=null, MASTER=null, MKEY=null, CURUSER=null;
+let published=null, dirty=false;
+const KEYD="ocupacion_marazul_draft";
+const stamp=()=>new Date().toISOString();
+const norm=s=>s.trim().toLowerCase();
+
+async function buildEnvelope(){
+  const payload=TE.encode(JSON.stringify({snapshots:state.snapshots,chartRows:state.chartRows}));
+  const s=await seal(MKEY,payload);
+  return {enc:1,iters:ITERS,updated:stamp(),users:envelope.users,iv:s.iv,ct:s.ct};
+}
+
+/* ===================== ACCESO ===================== */
+const gErr=m=>{ $("#gErr").textContent=m||""; };
+let failedTries=0;
+
+async function bootGate(){
+  let remote=null;
+  try{ const r=await fetch("datos.json?v="+Date.now(),{cache:"no-store"}); if(r.ok) remote=await r.json(); }
+  catch(e){ /* abierto como archivo suelto */ }
+  envelope=remote;
+  if(remote && !remote.enc) plainSeed=remote;
+  if(remote && remote.enc){
+    $("#gSub").textContent="Mar Azul Suites";
+    $("#gNote").textContent="Los datos están cifrados. Si perdés la contraseña no hay forma de recuperarlos.";
+    $("#gGo").textContent="Entrar";
+    $("#gUser").focus();
+  }else{
+    $("#gTitle").textContent="Primer acceso";
+    $("#gSub").textContent="Creá tu usuario para cifrar el tablero.";
+    $("#gPass2wrap").style.display="";
+    $("#gGo").textContent="Crear y cifrar";
+    $("#gNote").textContent="Usá una frase larga, de 12 caracteres para arriba. Anotala en tu gestor de contraseñas antes de seguir: no se puede recuperar.";
+    $("#gUser").focus();
+  }
+}
+
+$("#gGo").onclick=submitGate;
+["gUser","gPass","gPass2"].forEach(id=>{
+  $("#"+id).addEventListener("keydown",e=>{ if(e.key==="Enter") submitGate(); });
+});
+
+async function submitGate(){
+  const u=norm($("#gUser").value), p=$("#gPass").value;
+  gErr("");
+  if(!u||!p){ gErr("Completá usuario y contraseña."); return; }
+  $("#gGo").disabled=true; $("#gGo").textContent="Un momento…";
+  try{
+    if(envelope && envelope.enc) await doLogin(u,p);
+    else await doSetup(u,p,$("#gPass2").value);
+  }catch(err){
+    failedTries++;
+    gErr(err.message||"No se pudo entrar.");
+    await new Promise(r=>setTimeout(r,Math.min(4000,600*failedTries)));
+  }
+  $("#gGo").disabled=false;
+  $("#gGo").textContent = (envelope&&envelope.enc)?"Entrar":"Crear y cifrar";
+}
+
+async function doLogin(u,p){
+  const e=envelope.users.find(x=>x.u===u);
+  const fake=e||{salt:b64(rand(16)),iv:b64(rand(12)),wk:b64(rand(48))};
+  let master;
+  try{
+    const k=await kdf(p,ub64(fake.salt));
+    master=await open_(k,fake.iv,fake.wk);
+  }catch(err){ throw new Error("Usuario o contraseña incorrectos."); }
+  MASTER=master; MKEY=await rawKey(master); CURUSER=u;
+  const raw=await open_(MKEY,envelope.iv,envelope.ct);
+  published=JSON.parse(TD.decode(raw)); published.updated=envelope.updated;
+  await start();
+}
+
+async function doSetup(u,p,p2){
+  if(p.length<12) throw new Error("Mínimo 12 caracteres.");
+  if(p!==p2) throw new Error("Las contraseñas no coinciden.");
+  MASTER=rand(32); MKEY=await rawKey(MASTER); CURUSER=u;
+  envelope={enc:1,iters:ITERS,users:[await wrapFor(u,p,MASTER)]};
+  published = plainSeed;
+  await start();
+  dirty=true; markState();
+  toast("Cifrado listo. Publicá para que quede guardado.");
+}
+
+/* ===================== DATOS ===================== */
+async function start(){
+  $("#gate").style.display="none";
+  $("#app").style.display="";
+  let local=null;
+  try{
+    const d=JSON.parse(localStorage.getItem(KEYD)||"null");
+    if(d) local=JSON.parse(TD.decode(await open_(MKEY,d.iv,d.ct))), local.updated=d.updated;
+  }catch(e){ /* borrador de otra clave o corrupto: se ignora */ }
+
+  const localNewer = local && (!published || (local.updated||"") > (published.updated||""));
+  const src = localNewer ? local : published;
+  dirty = !!localNewer;
+  if(src){ state.snapshots=src.snapshots||[]; state.chartRows=src.chartRows||state.chartRows; }
+  if(!state.snapshots.length) state.snapshots=JSON.parse(JSON.stringify(SEED));
+  state.snapshots.sort((a,b)=>a.date<b.date?-1:1);
+  if(state.snapshots.length) state.sel=state.snapshots[state.snapshots.length-1].id;
+  $("#whoami").textContent=CURUSER;
+  markState(); render();
+}
+
+function markState(){
+  const d=$("#savedot");
+  if(dirty){ d.innerHTML='<b style="color:#B14A33">● borrador sin publicar</b>'; $("#btnPub").style.display=""; $("#btnDrop").style.display=""; }
+  else{
+    const u=published&&published.updated;
+    d.textContent = u ? "publicado "+new Date(u).toLocaleDateString("es-AR") : "sin publicar";
+    $("#btnPub").style.display="none"; $("#btnDrop").style.display="none";
+  }
+}
+
+function save(){
+  clearTimeout(saveTimer);
+  dirty=true; markState();
+  saveTimer=setTimeout(async()=>{
+    try{
+      const s=await seal(MKEY,TE.encode(JSON.stringify({snapshots:state.snapshots,chartRows:state.chartRows})));
+      localStorage.setItem(KEYD,JSON.stringify({updated:stamp(),iv:s.iv,ct:s.ct}));
+    }catch(e){ $("#savedot").textContent="no se pudo guardar el borrador"; }
+  },400);
+}
+
+const snap=id=>state.snapshots.find(s=>s.id===id);
+function prevOf(id){
+  const i=state.snapshots.findIndex(s=>s.id===id);
+  return i>0?state.snapshots[i-1]:null;
+}
+
+/* ============ tabs ============ */
+function renderTabs(){
+  const box=$("#tabs"); box.innerHTML="";
+  state.snapshots.forEach(s=>{
+    const b=el("button","tab");
+    b.setAttribute("role","tab");
+    b.setAttribute("aria-selected", s.id===state.sel?"true":"false");
+    b.appendChild(el("span",null,dow(s.date)));
+    b.appendChild(document.createTextNode(fmtShort(s.date)));
+    b.onclick=()=>{state.sel=s.id; render();};
+    box.appendChild(b);
+  });
+  if(state.snapshots.length){
+    const last=state.snapshots[state.snapshots.length-1];
+    const t=[...box.children].find(c=>c.getAttribute("aria-selected")==="true");
+    if(t) t.scrollIntoView({block:"nearest",inline:"nearest"});
+    void last;
+  }
+}
+
+/* ============ vista CARGA ============ */
+function viewCarga(){
+  const p=$("#panel"); p.innerHTML="";
+  if(!state.snapshots.length){
+    const e=el("div","empty");
+    e.appendChild(el("strong",null,"Todavía no hay ningún corte cargado"));
+    e.appendChild(el("div",null,"Creá el primer viernes y empezá a cargar cómo viene cada mes."));
+    const b=el("button","btn solid","+ Nuevo viernes"); b.style.marginTop="16px"; b.onclick=openNew;
+    e.appendChild(b); p.appendChild(e); return;
+  }
+  const s=snap(state.sel), pv=prevOf(state.sel);
+
+  const head=el("div","panelhead");
+  const h=el("h2",null,dow(s.date)+" "+fmtShort(s.date)+" · "+dnum(s.date).getFullYear());
+  head.appendChild(h);
+  const acts=el("div","tools");
+  if(pv){
+    const c=el("button","btn","Copiar valores del "+fmtShort(pv.date));
+    c.onclick=()=>{ Object.assign(s.values, JSON.parse(JSON.stringify(pv.values))); save(); render(); toast("Valores copiados"); };
+    acts.appendChild(c);
+  }
+  const del=el("button","btn danger","Eliminar corte");
+  del.onclick=()=>{
+    if(!confirm("¿Eliminar el corte del "+fmtShort(s.date)+"? No se puede deshacer.")) return;
+    state.snapshots=state.snapshots.filter(x=>x.id!==s.id);
+    state.sel=state.snapshots.length?state.snapshots[state.snapshots.length-1].id:null;
+    save(); render();
+  };
+  acts.appendChild(del);
+  head.appendChild(acts);
+  p.appendChild(head);
+
+  const note=el("div","hint","La barra muestra el nivel de ocupación; el tramo fuerte es lo que entró esta semana. La marca vertical es el cierre de la misma fecha en 25/26.");
+  note.style.marginBottom="16px"; p.appendChild(note);
+
+  GROUPS.forEach(gr=>{
+    const g=el("div","grp");
+    g.appendChild(el("div","grplabel",gr.g));
+    gr.items.forEach(r=>{
+      const row=el("div","row");
+      const lab=el("div","rlabel");
+      lab.appendChild(document.createTextNode(r.l));
+      if(r.tag) lab.appendChild(el("span","pill "+(r.cls||""),r.tag));
+      row.appendChild(lab);
+
+      const inp=document.createElement("input");
+      inp.type="number"; inp.min=0; inp.max=100; inp.step=1; inp.placeholder="—";
+      inp.value = s.values[r.k]==null?"":s.values[r.k];
+      inp.setAttribute("aria-label",r.l);
+      inp.oninput=()=>{
+        const v=inp.value===""?null:Math.max(0,Math.min(100,Number(inp.value)));
+        s.values[r.k]=v; save(); updateRow(row,r,s,pv);
+      };
+      const iw=el("div"); iw.appendChild(inp); row.appendChild(iw);
+
+      row.appendChild(el("div","delta"));
+      const bw=el("div","barwrap");
+      const bar=el("div","bar");
+      bar.appendChild(el("div","base")); bar.appendChild(el("div","gain"));
+      bar.appendChild(el("div","refmark"));
+      bw.appendChild(bar); bw.appendChild(el("div","barnote"));
+      row.appendChild(bw);
+
+      g.appendChild(row);
+      updateRow(row,r,s,pv);
+    });
+    p.appendChild(g);
+  });
+}
+
+function updateRow(row,r,s,pv){
+  const v=s.values[r.k], p=pv?pv.values[r.k]:null;
+  const d=row.querySelector(".delta");
+  const base=row.querySelector(".base"), gain=row.querySelector(".gain"), mark=row.querySelector(".refmark");
+  const note=row.querySelector(".barnote");
+  const diff=(v!=null&&p!=null)?v-p:null;
+
+  d.className="delta"+(diff>0?" up":diff<0?" down":"");
+  d.textContent = diff==null ? "" : (diff>0?"+":"")+diff.toFixed(0)+" pts";
+
+  const lo = v==null?0:(p==null?0:Math.min(v,p));
+  const hi = v==null?0:v;
+  base.style.width=lo+"%";
+  gain.style.left=Math.min(lo,hi)+"%";
+  gain.style.width=Math.max(0,hi-lo)+"%";
+  gain.style.background = (diff!=null&&diff<0)?"var(--down-soft)":"var(--sea)";
+  if(diff!=null&&diff<0){ base.style.width=hi+"%"; gain.style.left=hi+"%"; gain.style.width=(p-v)+"%"; }
+
+  const rr=refs(r.k), ref=rr[2].v;
+  if(ref!=null){
+    mark.style.display="block"; mark.style.left=ref+"%";
+    note.textContent = rr.filter(x=>x.v!=null).map(x=>x.y+": "+x.v+"%").join("   ");
+  } else { mark.style.display="none"; note.textContent=""; }
+}
+
+/* ============ vista EVOLUCIÓN ============ */
+function viewEvol(){
+  const p=$("#panel"); p.innerHTML="";
+  const head=el("div","panelhead");
+  head.appendChild(el("h2",null,"Evolución corte a corte"));
+  head.appendChild(el("div","hint","Cada columna es un viernes. Abajo de cada valor, la variación contra el corte anterior."));
+  p.appendChild(head);
+
+  if(!state.snapshots.length){ p.appendChild(el("div","empty","Cargá al menos un corte.")); return; }
+
+  const sc=el("div","scroller");
+  const t=document.createElement("table");
+  const th=document.createElement("thead"), tr=document.createElement("tr");
+  const c0=el("th","rowhead","Período"); tr.appendChild(c0);
+  state.snapshots.forEach(s=>{
+    const c=document.createElement("th");
+    c.appendChild(el("small",null,dow(s.date)));
+    c.appendChild(document.createTextNode(fmtShort(s.date)));
+    tr.appendChild(c);
+  });
+  ["3 años","2 años","año ant."].forEach((lb,i)=>{
+    const c=el("th","ref"); if(i===0) c.appendChild(el("small",null,"referencia"));
+    c.appendChild(document.createTextNode(lb)); tr.appendChild(c);
+  });
+  th.appendChild(tr); t.appendChild(th);
+
+  const tb=document.createElement("tbody");
+  GROUPS.forEach(gr=>{
+    const g=document.createElement("tr"); g.className="grouprow";
+    const gc=el("td","rowhead",gr.g); tb.appendChild(g); g.appendChild(gc);
+    const fill=document.createElement("td"); fill.colSpan=state.snapshots.length+3; g.appendChild(fill);
+    gr.items.forEach(r=>{
+      const row=document.createElement("tr");
+      row.appendChild(el("td","rowhead",r.l));
+      state.snapshots.forEach((s,i)=>{
+        const td=document.createElement("td");
+        const v=s.values[r.k];
+        const pvs=i>0?state.snapshots[i-1].values[r.k]:null;
+        if(v==null){ td.innerHTML='<span class="v" style="color:#B9C7CC">—</span>'; }
+        else{
+          const sp=el("span","v",v+"%"); td.appendChild(sp);
+          if(pvs!=null){
+            const df=v-pvs;
+            const ds=el("span","d"+(df>0?" up":df<0?" down":""),(df>0?"+":"")+df+" pts");
+            td.appendChild(ds);
+            if(df>0) td.style.background="linear-gradient(0deg,rgba(31,122,92,"+Math.min(.16,df/70)+"),rgba(31,122,92,"+Math.min(.16,df/70)+"))";
+            if(df<0) td.style.background="rgba(177,74,51,"+Math.min(.16,-df/40)+")";
+          }
+        }
+        row.appendChild(td);
+      });
+      refs(r.k).forEach(x=>{
+        const rf=el("td","ref");
+        if(x.v==null){ rf.innerHTML='<span style="color:#C9BFA6">—</span>'; }
+        else{ rf.appendChild(el("span","v",x.v+"%")); rf.appendChild(el("span","d",x.y)); }
+        row.appendChild(rf);
+      });
+      tb.appendChild(row);
+    });
+  });
+  t.appendChild(tb); sc.appendChild(t); p.appendChild(sc);
+}
+
+/* ============ vista CURVA ============ */
+function viewCurva(){
+  const p=$("#panel"); p.innerHTML="";
+  const head=el("div","panelhead");
+  head.appendChild(el("h2",null,"Curva de pickup"));
+  head.appendChild(el("div","hint","Eje horizontal: días antes del 23/12. La línea punteada es la misma fila en 25/26, alineada por anticipación."));
+  p.appendChild(head);
+
+  const chips=el("div","chips");
+  ALL.forEach(r=>{
+    const c=el("button","chip",r.l);
+    const on=state.chartRows.includes(r.k);
+    c.setAttribute("aria-pressed",on?"true":"false");
+    c.onclick=()=>{
+      const i=state.chartRows.indexOf(r.k);
+      if(i>=0) state.chartRows.splice(i,1); else state.chartRows.push(r.k);
+      save(); render();
+    };
+    chips.appendChild(c);
+  });
+  p.appendChild(chips);
+
+  if(!state.snapshots.length){ p.appendChild(el("div","empty","Cargá al menos un corte.")); return; }
+  if(!state.chartRows.length){ p.appendChild(el("div","empty","Elegí al menos un período arriba.")); return; }
+
+  const PAL=["#0E7C86","#B14A33","#1F7A5C","#33406B","#B07A1E","#7A3B6B","#2E7DA8","#5C6B2F"];
+  const W=940,H=420,mL=44,mR=16,mT=16,mB=46;
+  const series=[];
+  state.chartRows.forEach((k,idx)=>{
+    const col=PAL[idx%PAL.length];
+    const cur=state.snapshots.filter(s=>s.values[k]!=null).map(s=>({x:lead(s.date,CUR_ANCHOR),y:s.values[k],d:s.date}));
+    if(cur.length) series.push({k,col,pts:cur,dash:false});
+    const rk=refSeriesKey(k);
+    const rf=rk?REF.filter(s=>s.v[rk]!=null).map(s=>({x:lead(s.d,REF_ANCHOR),y:s.v[rk],d:s.d})):[];
+    if(rf.length) series.push({k,col,pts:rf,dash:true});
+  });
+  if(!series.length){ p.appendChild(el("div","empty","No hay valores cargados para esos períodos.")); return; }
+
+  let xs=[]; series.forEach(s=>s.pts.forEach(pt=>xs.push(pt.x)));
+  let xmax=Math.max(...xs), xmin=Math.min(...xs);
+  if(xmax===xmin){xmax+=7;xmin-=7;}
+  const X=v=>mL+((xmax-v)/(xmax-xmin))*(W-mL-mR);
+  const Y=v=>mT+(1-v/100)*(H-mT-mB);
+
+  let svg='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Curva de pickup">';
+  for(let g=0;g<=100;g+=20){
+    svg+='<line x1="'+mL+'" y1="'+Y(g)+'" x2="'+(W-mR)+'" y2="'+Y(g)+'" stroke="#E6EDEE" stroke-width="1"/>';
+    svg+='<text x="'+(mL-8)+'" y="'+(Y(g)+4)+'" text-anchor="end" font-family="ui-monospace,monospace" font-size="11" fill="#6E8794">'+g+'%</text>';
+  }
+  // marca del 23/12
+  if(xmin<=0&&xmax>=0){
+    svg+='<line x1="'+X(0)+'" y1="'+mT+'" x2="'+X(0)+'" y2="'+(H-mB)+'" stroke="#0B2432" stroke-width="1" stroke-dasharray="3 3" opacity=".5"/>';
+    svg+='<text x="'+(X(0)+5)+'" y="'+(mT+12)+'" font-family="ui-monospace,monospace" font-size="10" fill="#0B2432">23/12</text>';
+  }
+  const step=Math.max(7,Math.round((xmax-xmin)/8/7)*7);
+  for(let v=Math.ceil(xmin/step)*step; v<=xmax; v+=step){
+    svg+='<text x="'+X(v)+'" y="'+(H-mB+18)+'" text-anchor="middle" font-family="ui-monospace,monospace" font-size="10" fill="#6E8794">'+(v>0?v+"d":v===0?"0":Math.abs(v)+"d post")+'</text>';
+  }
+  svg+='<text x="'+((W+mL)/2)+'" y="'+(H-8)+'" text-anchor="middle" font-family="ui-sans-serif,sans-serif" font-size="10" letter-spacing="2" fill="#6E8794">DÍAS ANTES DEL 23/12</text>';
+  svg+='<line x1="'+mL+'" y1="'+(H-mB)+'" x2="'+(W-mR)+'" y2="'+(H-mB)+'" stroke="#0B2432" stroke-width="1"/>';
+
+  series.forEach(s=>{
+    const pts=s.pts.slice().sort((a,b)=>b.x-a.x);
+    const d=pts.map((pt,i)=>(i?"L":"M")+X(pt.x).toFixed(1)+" "+Y(pt.y).toFixed(1)).join(" ");
+    svg+='<path d="'+d+'" fill="none" stroke="'+s.col+'" stroke-width="'+(s.dash?1.5:2.4)+'" '+(s.dash?'stroke-dasharray="5 4" opacity=".55"':'')+' stroke-linejoin="round"/>';
+    if(!s.dash) pts.forEach(pt=>{ svg+='<circle cx="'+X(pt.x).toFixed(1)+'" cy="'+Y(pt.y).toFixed(1)+'" r="3" fill="#fff" stroke="'+s.col+'" stroke-width="2"/>'; });
+  });
+  svg+='</svg>';
+
+  const box=el("div","chartbox"); box.innerHTML=svg; p.appendChild(box);
+
+  const lg=el("div","legend");
+  state.chartRows.forEach((k,i)=>{
+    const c=PAL[i%PAL.length];
+    const s=el("span"); s.innerHTML='<i style="border-top-color:'+c+'"></i>'+KEYOF[k].l;
+    lg.appendChild(s);
+  });
+  const dl=el("span"); dl.innerHTML='<i style="border-top-color:#6E8794;border-top-style:dashed"></i>punteado = temporada 25/26';
+  lg.appendChild(dl);
+  p.appendChild(lg);
+}
+
+/* ============ vista HISTÓRICO ============ */
+function viewHist(){
+  const p=$("#panel"); p.innerHTML="";
+  const head=el("div","panelhead");
+  head.appendChild(el("h2",null,"Ocupación mensual por año"));
+  head.appendChild(el("div","hint","Mes completo, 2023 a 2026. De agosto 2026 en adelante son valores en curso, no cerrados."));
+  p.appendChild(head);
+
+  const W=940,H=380,mL=44,mR=16,mT=16,mB=44;
+  const COL={2023:"#B07A1E",2024:"#7A3B6B",2025:"#33406B",2026:"#0E7C86"};
+  const X=i=>mL+(i/11)*(W-mL-mR), Y=v=>mT+(1-v/100)*(H-mT-mB);
+  let svg='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Ocupación mensual por año">';
+  for(let g=0;g<=100;g+=20){
+    svg+='<line x1="'+mL+'" y1="'+Y(g)+'" x2="'+(W-mR)+'" y2="'+Y(g)+'" stroke="#E6EDEE"/>';
+    svg+='<text x="'+(mL-8)+'" y="'+(Y(g)+4)+'" text-anchor="end" font-family="ui-monospace,monospace" font-size="11" fill="#6E8794">'+g+'%</text>';
+  }
+  MES.forEach((m,i)=>{ svg+='<text x="'+X(i)+'" y="'+(H-mB+19)+'" text-anchor="middle" font-family="ui-monospace,monospace" font-size="10" fill="#6E8794">'+m+'</text>'; });
+  svg+='<line x1="'+mL+'" y1="'+(H-mB)+'" x2="'+(W-mR)+'" y2="'+(H-mB)+'" stroke="#0B2432"/>';
+  [2023,2024,2025,2026].forEach(y=>{
+    const pts=[]; HIST[y].forEach((v,i)=>{ if(v!=null) pts.push({i,v}); });
+    const cerr = y===2026 ? pts.filter(q=>q.i<=6) : pts;
+    const curso= y===2026 ? pts.filter(q=>q.i>=6) : [];
+    const path=a=>a.map((q,i)=>(i?"L":"M")+X(q.i).toFixed(1)+" "+Y(q.v).toFixed(1)).join(" ");
+    if(cerr.length) svg+='<path d="'+path(cerr)+'" fill="none" stroke="'+COL[y]+'" stroke-width="'+(y===2026?2.6:1.8)+'" stroke-linejoin="round" '+(y===2026?'':'opacity=".8"')+'/>';
+    if(curso.length) svg+='<path d="'+path(curso)+'" fill="none" stroke="'+COL[y]+'" stroke-width="2.6" stroke-dasharray="5 4" stroke-linejoin="round"/>';
+    pts.forEach(q=>{ svg+='<circle cx="'+X(q.i).toFixed(1)+'" cy="'+Y(q.v).toFixed(1)+'" r="'+(y===2026?3.2:2.4)+'" fill="#fff" stroke="'+COL[y]+'" stroke-width="2"/>'; });
+  });
+  svg+='</svg>';
+  const box=el("div","chartbox"); box.innerHTML=svg; p.appendChild(box);
+
+  const lg=el("div","legend");
+  [2023,2024,2025,2026].forEach(y=>{ const s=el("span"); s.innerHTML='<i style="border-top-color:'+COL[y]+'"></i>'+y; lg.appendChild(s); });
+  const d=el("span"); d.innerHTML='<i style="border-top-color:#0E7C86;border-top-style:dashed"></i>2026 en curso';
+  lg.appendChild(d); p.appendChild(lg);
+
+  const sc=el("div","scroller"); sc.style.marginTop="20px";
+  const t=document.createElement("table");
+  let html="<thead><tr><th class='rowhead'>Año</th>"+MES.map(m=>"<th>"+m+"</th>").join("")+"<th>Prom.</th></tr></thead><tbody>";
+  [2023,2024,2025,2026].forEach(y=>{
+    const vs=HIST[y].filter(v=>v!=null);
+    const avg=Math.round(vs.reduce((a,b)=>a+b,0)/vs.length);
+    html+="<tr><td class='rowhead'>"+y+"</td>"+HIST[y].map(v=>"<td>"+(v==null?"<span style='color:#B9C7CC'>—</span>":v+"%")+"</td>").join("")+"<td style='font-weight:700'>"+avg+"%</td></tr>";
+  });
+  html+="</tbody>";
+  t.innerHTML=html; sc.appendChild(t); p.appendChild(sc);
+}
+
+/* ============ render ============ */
+function render(){
+  renderTabs();
+  document.querySelectorAll(".viewbtn").forEach(b=>b.setAttribute("aria-selected", b.dataset.view===state.view?"true":"false"));
+  if(state.view==="carga") viewCarga();
+  else if(state.view==="evol") viewEvol();
+  else if(state.view==="hist") viewHist();
+  else viewCurva();
+}
+document.querySelectorAll(".viewbtn").forEach(b=>b.onclick=()=>{state.view=b.dataset.view; render();});
+
+/* ============ nuevo corte ============ */
+function nextFriday(){
+  const last=state.snapshots.length?dnum(state.snapshots[state.snapshots.length-1].date):null;
+  let d=new Date();
+  if(last){ d=new Date(last.getTime()+7*86400000); }
+  else { const back=(d.getDay()-5+7)%7; d=new Date(d.getTime()-back*86400000); }
+  return d.toISOString().slice(0,10);
+}
+function openNew(){ $("#newDate").value=nextFriday(); $("#modal").classList.add("show"); $("#newDate").focus(); }
+$("#btnNew").onclick=openNew;
+$("#mCancel").onclick=()=>$("#modal").classList.remove("show");
+$("#modal").onclick=e=>{ if(e.target===$("#modal")) $("#modal").classList.remove("show"); };
+$("#mOk").onclick=()=>{
+  const d=$("#newDate").value;
+  if(!d){ toast("Elegí una fecha"); return; }
+  if(state.snapshots.some(s=>s.date===d)){ toast("Ya existe un corte con esa fecha"); return; }
+  const carry=$("#carry").checked && state.snapshots.length;
+  const src=state.snapshots.length?state.snapshots[state.snapshots.length-1]:null;
+  const ns={ id:"s"+Date.now(), date:d, values: carry?JSON.parse(JSON.stringify(src.values)):{} };
+  state.snapshots.push(ns);
+  state.snapshots.sort((a,b)=>a.date<b.date?-1:1);
+  state.sel=ns.id; state.view="carga";
+  $("#modal").classList.remove("show");
+  save(); render();
+};
+
+/* ============ export / import ============ */
+function download(name,txt,mime){
+  const b=new Blob([txt],{type:mime}); const u=URL.createObjectURL(b);
+  const a=document.createElement("a"); a.href=u; a.download=name; a.click(); URL.revokeObjectURL(u);
+}
+$("#btnCsv").onclick=()=>{
+  if(!state.snapshots.length){ toast("No hay datos"); return; }
+  const sep=";";
+  let out="Periodo"+sep+state.snapshots.map(s=>dow(s.date)+" "+fmtShort(s.date)).join(sep)+sep+"ref -3"+sep+"ref -2"+sep+"ref -1\n";
+  GROUPS.forEach(gr=>{
+    out+=gr.g+"\n";
+    gr.items.forEach(r=>{
+      out+=r.l+sep+state.snapshots.map(s=>s.values[r.k]==null?"":s.values[r.k]).join(sep)
+         +sep+refs(r.k).map(x=>x.v==null?"":x.y+" "+x.v).join(sep)+"\n";
+    });
+  });
+  download("pickup-ocupacion.csv","\uFEFF"+out,"text/csv;charset=utf-8");
+  toast("CSV descargado");
+};
+$("#btnPub").onclick=async()=>{
+  try{
+    const env=await buildEnvelope();
+    download("datos.json",JSON.stringify(env,null,2),"application/json");
+    published={snapshots:state.snapshots,chartRows:state.chartRows,updated:env.updated};
+    try{ localStorage.removeItem(KEYD); }catch(e){}
+    dirty=false; markState();
+    toast("datos.json cifrado — subilo con publicar.bat");
+  }catch(e){ toast("No se pudo cifrar"); }
+};
+$("#btnDrop").onclick=()=>{
+  if(!published){ toast("Todavía no hay una versión publicada"); return; }
+  if(!confirm("Descartar tus cambios locales y volver a la versión publicada?")) return;
+  try{ localStorage.removeItem(KEYD); }catch(e){}
+  location.reload();
+};
+
+/* ===================== EQUIPO ===================== */
+$("#btnTeam").onclick=()=>{
+  const box=$("#teamList"); box.innerHTML="";
+  envelope.users.forEach(u=>{
+    const r=el("div","userrow");
+    r.appendChild(el("span",null,u.u));
+    if(u.u===CURUSER) r.appendChild(el("span","me","vos"));
+    else{
+      const b=el("button","btn danger","Quitar");
+      b.onclick=()=>{
+        if(!confirm("Quitar a "+u.u+"? No va a poder entrar más.")) return;
+        envelope.users=envelope.users.filter(x=>x.u!==u.u);
+        dirty=true; markState(); $("#btnTeam").click();
+        toast("Publicá para que el cambio tenga efecto");
+      };
+      r.appendChild(b);
+    }
+    box.appendChild(r);
+  });
+  $("#teamModal").classList.add("show");
+};
+$("#tClose").onclick=()=>$("#teamModal").classList.remove("show");
+$("#teamModal").onclick=e=>{ if(e.target===$("#teamModal")) $("#teamModal").classList.remove("show"); };
+$("#tAdd").onclick=async()=>{
+  const u=norm($("#tUser").value), p=$("#tPass").value;
+  if(!u||!p){ toast("Completá usuario y contraseña"); return; }
+  if(p.length<12){ toast("Mínimo 12 caracteres"); return; }
+  if(envelope.users.some(x=>x.u===u)){ toast("Ese usuario ya existe"); return; }
+  envelope.users.push(await wrapFor(u,p,MASTER));
+  $("#tUser").value=""; $("#tPass").value="";
+  dirty=true; markState(); $("#btnTeam").click();
+  toast("Usuario creado. Publicá para activarlo.");
+};
+$("#tChange").onclick=async()=>{
+  const p=$("#tNewPass").value;
+  if(p.length<12){ toast("Mínimo 12 caracteres"); return; }
+  envelope.users=envelope.users.map(x=>x.u===CURUSER?null:x).filter(Boolean);
+  envelope.users.push(await wrapFor(CURUSER,p,MASTER));
+  $("#tNewPass").value="";
+  dirty=true; markState();
+  toast("Contraseña cambiada. Publicá para activarla.");
+};
+bootGate();
+})();
+</script>
