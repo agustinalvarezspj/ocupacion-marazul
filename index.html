@@ -314,6 +314,13 @@
     <label class="chk" style="display:block;margin-top:18px">Cambiar mi contraseña</label>
     <input id="tNewPass" type="password" placeholder="nueva contraseña (12+)" style="width:100%;padding:8px;border:1px solid var(--line);border-radius:2px;font-family:var(--mono);margin-top:6px">
     <button class="btn" id="tChange" style="margin-top:8px">Cambiar</button>
+    <label class="chk" style="display:block;margin-top:18px">Publicación directa a GitHub</label>
+    <div id="tTokState" style="font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:4px"></div>
+    <input id="tToken" type="password" placeholder="pegá acá el token de GitHub" autocomplete="off" style="width:100%;padding:8px;border:1px solid var(--line);border-radius:2px;font-family:var(--mono);margin-top:6px">
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <button class="btn" id="tTokSave">Guardar token</button>
+      <button class="btn danger" id="tTokDrop">Quitar</button>
+    </div>
     <div class="acts"><button class="btn solid" id="tClose">Cerrar</button></div>
   </div>
 </div>
@@ -1037,13 +1044,60 @@ $("#btnCsv").onclick=()=>{
 $("#btnPub").onclick=async()=>{
   try{
     const env=await buildEnvelope();
+    const tok=await getToken();
+    if(tok){
+      $("#btnPub").disabled=true; $("#btnPub").textContent="Publicando…";
+      await publishDirect(env,tok);
+      $("#btnPub").disabled=false; $("#btnPub").textContent="Publicar cambios";
+      published={snapshots:state.snapshots,chartRows:state.chartRows,updated:env.updated};
+      try{ localStorage.removeItem(KEYD); }catch(e){}
+      dirty=false; markState();
+      toast("Publicado en GitHub. En un minuto lo ve todo el equipo.");
+      return;
+    }
     download("datos.json",JSON.stringify(env,null,2),"application/json");
     published={snapshots:state.snapshots,chartRows:state.chartRows,updated:env.updated};
     try{ localStorage.removeItem(KEYD); }catch(e){}
     dirty=false; markState();
     toast("datos.json cifrado — subilo con publicar.bat");
-  }catch(e){ toast("No se pudo cifrar"); }
+  }catch(e){
+    $("#btnPub").disabled=false; $("#btnPub").textContent="Publicar cambios";
+    toast("No se pudo publicar: "+(e.message||"error"));
+  }
 };
+
+/* ===================== PUBLICACIÓN DIRECTA (GitHub API) =====================
+   El token se guarda cifrado con tu clave maestra en este navegador.
+   Sin login no se puede leer; sin token se usa la descarga de siempre.  */
+const REPO="agustinalvarezspj/ocupacion-marazul";
+const KEYT="ocupacion_marazul_token";
+async function getToken(){
+  try{
+    const d=JSON.parse(localStorage.getItem(KEYT)||"null");
+    if(!d) return null;
+    return TD.decode(await open_(MKEY,d.iv,d.ct));
+  }catch(e){ return null; }
+}
+async function setToken(t){
+  if(!t){ localStorage.removeItem(KEYT); return; }
+  const s=await seal(MKEY,TE.encode(t.trim()));
+  localStorage.setItem(KEYT,JSON.stringify({iv:s.iv,ct:s.ct}));
+}
+async function publishDirect(env,tok){
+  const url="https://api.github.com/repos/"+REPO+"/contents/datos.json";
+  const h={"Authorization":"Bearer "+tok,"Accept":"application/vnd.github+json","Content-Type":"application/json"};
+  let sha=null;
+  const cur=await fetch(url+"?ref=main",{headers:h});
+  if(cur.status===401||cur.status===403) throw new Error("token inválido o sin permiso");
+  if(cur.ok) sha=(await cur.json()).sha;
+  const txt=JSON.stringify(env,null,2);
+  const content=btoa(unescape(encodeURIComponent(txt)));
+  const last=state.snapshots[state.snapshots.length-1];
+  const body={message:"Ocupacion actualizada "+(last?fmtShort(last.date):""),content,branch:"main"};
+  if(sha) body.sha=sha;
+  const r=await fetch(url,{method:"PUT",headers:h,body:JSON.stringify(body)});
+  if(!r.ok){ const t=await r.text(); throw new Error("GitHub respondió "+r.status); }
+}
 $("#btnDrop").onclick=()=>{
   if(!published){ toast("Todavía no hay una versión publicada"); return; }
   if(!confirm("Descartar tus cambios locales y volver a la versión publicada?")) return;
@@ -1071,7 +1125,22 @@ $("#btnTeam").onclick=()=>{
     box.appendChild(r);
   });
   $("#teamModal").classList.add("show");
+  refreshTokState();
 };
+async function refreshTokState(){
+  const t=await getToken();
+  $("#tTokState").textContent = t
+    ? "Activa en este navegador: 'Publicar cambios' sube directo al repo."
+    : "No configurada: 'Publicar cambios' descarga el archivo para subirlo a mano.";
+}
+$("#tTokSave").onclick=async()=>{
+  const t=$("#tToken").value.trim();
+  if(!t){ toast("Pegá el token primero"); return; }
+  if(!/^(github_pat_|ghp_)/.test(t)){ toast("Eso no parece un token de GitHub"); return; }
+  await setToken(t); $("#tToken").value="";
+  refreshTokState(); toast("Token guardado, cifrado con tu clave");
+};
+$("#tTokDrop").onclick=async()=>{ await setToken(null); refreshTokState(); toast("Token quitado"); };
 $("#tClose").onclick=()=>$("#teamModal").classList.remove("show");
 $("#teamModal").onclick=e=>{ if(e.target===$("#teamModal")) $("#teamModal").classList.remove("show"); };
 $("#tAdd").onclick=async()=>{
