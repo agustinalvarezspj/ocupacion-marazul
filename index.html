@@ -218,6 +218,18 @@
   .sitem em{font-family:var(--mono);font-size:10px;font-style:normal}
   .sitem em.up{color:var(--up)} .sitem em.down{color:var(--down)} .sitem em.flat{color:var(--muted)}
   .sparkcell{display:flex;align-items:center;gap:8px;justify-content:space-between}
+  /* ---------- por tipo de suite ---------- */
+  .modeswitch{display:inline-flex;border:1px solid var(--line);border-radius:2px;overflow:hidden;margin-bottom:14px}
+  .modeswitch button{background:var(--surface);border:none;padding:6px 12px;color:var(--muted);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+  .modeswitch button[aria-pressed="true"]{background:var(--ink);color:#fff}
+  table.tgrid input[type=number]{width:62px;padding:4px 6px;font-size:13px}
+  table.tgrid th.tt{font-size:9px;letter-spacing:.06em;line-height:1.25;white-space:normal;min-width:70px}
+  table.tgrid td.pond{font-weight:700;color:var(--sea-deep)}
+  table.tgrid td.pond.off{color:var(--down);background:var(--down-soft)}
+  table.tgrid td.gen{color:var(--muted)}
+  .ptipos{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-top:10px;padding-top:9px;border-top:1px solid var(--line-soft)}
+  .ptipos span{text-align:center;font-size:8px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);line-height:1.2}
+  .ptipos span b{display:block;font-family:var(--mono);font-size:13px;font-weight:700;color:var(--ink);letter-spacing:0;margin-bottom:1px}
 
   .savedot{font-family:var(--mono);font-size:11px;color:var(--muted)}
   .modalbg{position:fixed;inset:0;background:rgba(11,36,50,.45);display:none;align-items:center;justify-content:center;z-index:70;padding:18px}
@@ -283,6 +295,7 @@
     <button class="viewbtn" data-view="carga" role="tab" aria-selected="false">Carga</button>
     <button class="viewbtn" data-view="evol" role="tab" aria-selected="false">Evolución</button>
     <button class="viewbtn" data-view="curva" role="tab" aria-selected="false">Curva</button>
+    <button class="viewbtn" data-view="tipos" role="tab" aria-selected="false">Por suite</button>
     <button class="viewbtn" data-view="hist" role="tab" aria-selected="false">Histórico</button>
   </nav>
 
@@ -357,6 +370,21 @@ const GROUPS = [
   ]}
 ];
 const ALL = GROUPS.flatMap(g=>g.items);
+/* tipos de suite: n = cantidad de unidades, para ponderar */
+const TIPOS=[
+  {k:"h301",l:"301",   full:"Suite hotel triple 301",   n:1},
+  {k:"h302",l:"302–306",full:"Suites hotel 302 a 306",  n:5},
+  {k:"h307",l:"307",   full:"Suite hotel premium 307",  n:1},
+  {k:"a100",l:"101–103",full:"Suites apart 101 a 103",  n:3},
+  {k:"a200",l:"201–203",full:"Suites apart 201 a 203",  n:3}
+];
+const NSUITES=TIPOS.reduce((a,t)=>a+t.n,0);
+const tv=(s,pk,tk)=>{ const t=s.tipos&&s.tipos[pk]; return t&&t[tk]!=null?t[tk]:null; };
+function pond(s,pk){
+  let sum=0,n=0;
+  TIPOS.forEach(t=>{ const v=tv(s,pk,t.k); if(v!=null){ sum+=v*t.n; n+=t.n; } });
+  return n===NSUITES ? Math.round(sum/n) : null;
+}
 const KEYOF = {}; ALL.forEach(r=>KEYOF[r.k]=r);
 
 /* ============ referencia temporada 25/26 (transcripta de la planilla) ============ */
@@ -653,6 +681,14 @@ function viewCarga(){
   const note=el("div","hint","La barra muestra el nivel de ocupación; el tramo fuerte es lo que entró esta semana. La marca vertical es el cierre de la misma fecha en 25/26.");
   note.style.marginBottom="16px"; p.appendChild(note);
 
+  const ms=el("div","modeswitch");
+  [["general","General"],["tipos","Por tipo de suite"]].forEach(([m,l])=>{
+    const b=el("button",null,l); b.setAttribute("aria-pressed",(state.cargaMode||"general")===m?"true":"false");
+    b.onclick=()=>{ state.cargaMode=m; render(); }; ms.appendChild(b);
+  });
+  p.insertBefore(ms,note);
+  if(state.cargaMode==="tipos"){ viewCargaTipos(p,s,pv); return; }
+
   GROUPS.forEach(gr=>{
     const g=el("div","grp");
     g.appendChild(el("div","grplabel",gr.g));
@@ -942,7 +978,8 @@ function viewPanorama(){
       '<div class="pval'+(v==null?' none':'')+'">'+(v==null?'—':v+'%')+'</div>'+
       chip(d)+
       '<div class="pbar"><i style="width:'+(v||0)+'%"></i>'+(ref!=null?'<u style="left:'+ref+'%"></u>':'')+'</div>'+
-      (ref!=null?'<div class="pref">cerró en '+ref+'% la temporada pasada</div>':'<div class="pref">sin referencia</div>');
+      (ref!=null?'<div class="pref">cerró en '+ref+'% la temporada pasada</div>':'<div class="pref">sin referencia</div>')+
+      tiposStrip(s,k);
     cards.appendChild(c);
   });
   s1.appendChild(cards); p.appendChild(s1);
@@ -984,6 +1021,93 @@ function spark(k){
     '<polyline points="'+pts+'" fill="none" stroke="#0E7C86" stroke-width="1.5" stroke-linejoin="round"/></svg>';
 }
 
+/* ============ CARGA por tipo de suite ============ */
+function viewCargaTipos(p,s,pv){
+  if(!s.tipos) s.tipos={};
+  const sc=el("div","scroller");
+  const t=document.createElement("table"); t.className="tgrid";
+  let h='<thead><tr><th class="rowhead">Período</th>'+
+    TIPOS.map(x=>'<th class="tt" title="'+x.full+'">'+x.l+'<small>'+x.n+(x.n>1?' suites':' suite')+'</small></th>').join('')+
+    '<th class="tt">Ponderado<small>calculado</small></th><th class="tt">General<small>cargado</small></th></tr></thead><tbody>';
+  t.innerHTML=h;
+  const tb=t.querySelector("tbody");
+  GROUPS.forEach(gr=>{
+    const g=document.createElement("tr"); g.className="grouprow";
+    g.innerHTML='<td class="rowhead">'+gr.g+'</td><td colspan="'+(TIPOS.length+2)+'"></td>'; tb.appendChild(g);
+    gr.items.forEach(r=>{
+      const row=document.createElement("tr");
+      row.appendChild(el("td","rowhead",r.l));
+      TIPOS.forEach(x=>{
+        const td=document.createElement("td");
+        const inp=document.createElement("input"); inp.type="number"; inp.min=0; inp.max=100; inp.step=1; inp.placeholder="—";
+        const v=tv(s,r.k,x.k); inp.value=v==null?"":v;
+        inp.setAttribute("aria-label",r.l+" "+x.full);
+        inp.oninput=()=>{
+          if(!s.tipos[r.k]) s.tipos[r.k]={};
+          s.tipos[r.k][x.k]= inp.value===""?null:Math.max(0,Math.min(100,Number(inp.value)));
+          save(); updPond(row,s,r.k);
+        };
+        td.appendChild(inp); row.appendChild(td);
+      });
+      row.appendChild(el("td","pond")); row.appendChild(el("td","gen"));
+      tb.appendChild(row); updPond(row,s,r.k);
+    });
+  });
+  sc.appendChild(t); p.appendChild(sc);
+  p.appendChild(el("div","hint","El ponderado pesa cada tipo por su cantidad de suites (13 en total). Si se aleja más de 5 puntos del general cargado, se marca en rojo: revisá los números."));
+}
+function updPond(row,s,pk){
+  const pd=row.querySelector(".pond"), gn=row.querySelector(".gen");
+  const pv=pond(s,pk), g=s.values[pk];
+  pd.textContent=pv==null?"":pv+"%";
+  gn.textContent=g==null?"":g+"%";
+  pd.className="pond"+((pv!=null&&g!=null&&Math.abs(pv-g)>5)?" off":"");
+}
+
+/* ============ vista POR SUITE ============ */
+function viewTipos(){
+  const p=$("#panel"); p.innerHTML="";
+  if(!state.snapshots.length){ p.appendChild(el("div","empty","Cargá al menos un corte.")); return; }
+  const s=snap(state.sel)||state.snapshots[state.snapshots.length-1], pv=prevOf(s.id);
+  const head=el("div","panelhead");
+  head.appendChild(el("h2",null,"Ocupación por tipo de suite · "+dow(s.date)+" "+fmtShort(s.date)));
+  head.appendChild(el("div","hint",pv?"Abajo de cada valor, la variación contra el "+fmtShort(pv.date)+".":"Primer corte con apertura por tipo."));
+  p.appendChild(head);
+  const sc=el("div","scroller");
+  const t=document.createElement("table");
+  t.innerHTML='<thead><tr><th class="rowhead">Período</th>'+
+    TIPOS.map(x=>'<th>'+x.l+'<small>'+x.full.replace(/^Suites? /,'')+'</small></th>').join('')+
+    '<th class="ref">Ponderado</th><th class="ref">General</th></tr></thead><tbody>';
+  const tb=t.querySelector("tbody");
+  GROUPS.forEach(gr=>{
+    const g=document.createElement("tr"); g.className="grouprow";
+    g.innerHTML='<td class="rowhead">'+gr.g+'</td><td colspan="'+(TIPOS.length+2)+'"></td>'; tb.appendChild(g);
+    gr.items.forEach(r=>{
+      const row=document.createElement("tr"); row.appendChild(el("td","rowhead",r.l));
+      TIPOS.forEach(x=>{
+        const td=document.createElement("td");
+        const v=tv(s,r.k,x.k), o=pv?tv(pv,r.k,x.k):null;
+        if(v==null){ td.innerHTML='<span class="v" style="color:#B9C7CC">—</span>'; }
+        else{
+          td.appendChild(el("span","v",v+"%"));
+          if(o!=null){ const d=v-o; td.appendChild(el("span","d"+(d>0?" up":d<0?" down":""),(d>0?"+":"")+d)); }
+          td.style.background="rgba(14,124,134,"+(v/100*0.22).toFixed(3)+")";
+        }
+        row.appendChild(td);
+      });
+      const pd=pond(s,r.k), gn=s.values[r.k];
+      const c1=el("td","ref",pd==null?"—":pd+"%"); const c2=el("td","ref",gn==null?"—":gn+"%");
+      if(pd!=null&&gn!=null&&Math.abs(pd-gn)>5){ c1.style.color="var(--down)"; c1.style.fontWeight="700"; }
+      row.appendChild(c1); row.appendChild(c2); tb.appendChild(row);
+    });
+  });
+  sc.appendChild(t); p.appendChild(sc);
+}
+function tiposStrip(s,pk){
+  if(!TIPOS.some(x=>tv(s,pk,x.k)!=null)) return "";
+  return '<div class="ptipos">'+TIPOS.map(x=>{ const v=tv(s,pk,x.k); return '<span><b>'+(v==null?'—':v+'%')+'</b>'+x.l+'</span>'; }).join('')+'</div>';
+}
+
 /* ============ render ============ */
 function render(){
   renderTabs();
@@ -992,6 +1116,7 @@ function render(){
   else if(state.view==="carga") viewCarga();
   else if(state.view==="evol") viewEvol();
   else if(state.view==="hist") viewHist();
+  else if(state.view==="tipos") viewTipos();
   else viewCurva();
 }
 document.querySelectorAll(".viewbtn").forEach(b=>b.onclick=()=>{state.view=b.dataset.view; render();});
@@ -1014,7 +1139,8 @@ $("#mOk").onclick=()=>{
   if(state.snapshots.some(s=>s.date===d)){ toast("Ya existe un corte con esa fecha"); return; }
   const carry=$("#carry").checked && state.snapshots.length;
   const src=state.snapshots.length?state.snapshots[state.snapshots.length-1]:null;
-  const ns={ id:"s"+Date.now(), date:d, values: carry?JSON.parse(JSON.stringify(src.values)):{} };
+  const ns={ id:"s"+Date.now(), date:d, values: carry?JSON.parse(JSON.stringify(src.values)):{},
+             tipos: (carry&&src.tipos)?JSON.parse(JSON.stringify(src.tipos)):{} };
   state.snapshots.push(ns);
   state.snapshots.sort((a,b)=>a.date<b.date?-1:1);
   state.sel=ns.id; state.view="carga";
@@ -1039,6 +1165,13 @@ $("#btnCsv").onclick=()=>{
     });
   });
   download("pickup-ocupacion.csv","\uFEFF"+out,"text/csv;charset=utf-8");
+  out+="\nPOR TIPO DE SUITE\n";
+  TIPOS.forEach(x=>{
+    out+=x.full+"\n";
+    GROUPS.forEach(gr=>gr.items.forEach(r=>{
+      out+=r.l+sep+state.snapshots.map(s=>{const v=tv(s,r.k,x.k);return v==null?"":v;}).join(sep)+"\n";
+    }));
+  });
   toast("CSV descargado");
 };
 $("#btnPub").onclick=async()=>{
