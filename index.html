@@ -604,7 +604,12 @@ function markState(){
   if(dirty){ d.innerHTML='<b style="color:#B14A33">● borrador sin publicar</b>'; $("#btnPub").style.display=""; $("#btnDrop").style.display=""; }
   else{
     const u=published&&published.updated;
-    d.textContent = u ? "publicado "+new Date(u).toLocaleDateString("es-AR") : "sin publicar";
+    const ult=state.snapshots.length?state.snapshots[state.snapshots.length-1]:null;
+    if(ult && ult.auto && ult.auto.updated){
+      d.textContent = "actualizado por el bot "+new Date(ult.auto.updated).toLocaleString("es-AR",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"});
+    } else {
+      d.textContent = u ? "publicado "+new Date(u).toLocaleDateString("es-AR") : "sin publicar";
+    }
     $("#btnPub").style.display="none"; $("#btnDrop").style.display="none";
   }
 }
@@ -1176,6 +1181,17 @@ $("#btnCsv").onclick=()=>{
 };
 $("#btnPub").onclick=async()=>{
   try{
+    /* SE_ACTUALIZO_DESPUES: no pisar algo publicado despues de abrir esta pagina (p. ej. el bot) */
+    try{
+      const rr=await fetch("datos.json?v="+Date.now(),{cache:"no-store"});
+      if(rr.ok){
+        const rem=await rr.json();
+        if(published && published.updated && rem.updated && rem.updated>published.updated){
+          toast("El tablero se actualizo despues de que lo abriste. Recarga la pagina antes de publicar.");
+          return;
+        }
+      }
+    }catch(e){}
     const env=await buildEnvelope();
     const tok=await getToken();
     if(tok){
