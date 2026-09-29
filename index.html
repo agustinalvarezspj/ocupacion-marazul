@@ -953,7 +953,7 @@ function viewHist(){
 /* ============ vista PANORAMA ============ */
 function chip(d){
   if(d==null) return '<span class="pchip flat">sin dato anterior</span>';
-  if(d>0) return '<span class="pchip up">+'+d+' pts esta semana</span>';
+  if(d>0) return '<span class="pchip up">+'+d+' pts desde el corte anterior</span>';
   if(d<0) return '<span class="pchip down">'+d+' pts</span>';
   return '<span class="pchip flat">sin movimiento</span>';
 }
